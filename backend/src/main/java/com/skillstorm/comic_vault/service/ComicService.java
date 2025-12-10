@@ -1,0 +1,54 @@
+package com.skillstorm.comic_vault.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.skillstorm.comic_vault.model.Comic;
+import com.skillstorm.comic_vault.repository.ComicRepository;
+
+@Service
+public class ComicService {
+    
+    private final ComicRepository comicRepository;
+    
+    // constructor injection
+    public ComicService(ComicRepository comicRepository) {
+        this.comicRepository = comicRepository;
+    }
+    
+    // get all comics
+    public List<Comic> getAllComics() {
+        return comicRepository.findAll();
+    }
+    
+    // get comic by ID
+    public Optional<Comic> getComicById(Long id) {
+        return comicRepository.findById(id);
+    }
+    
+    // create new comic
+    public Comic createComic(Comic comic) {
+        return comicRepository.save(comic);
+    }
+    
+    // update existing comic
+    public Comic updateComic(Long id, Comic comicDetails) {
+        Comic comic = comicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+        
+        comic.setSku(comicDetails.getSku());
+        comic.setName(comicDetails.getName());
+        comic.setDescription(comicDetails.getDescription());
+        
+        return comicRepository.save(comic);
+    }
+    
+    // delete comic
+    public void deleteComic(Long id) {
+        Comic comic = comicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+        comicRepository.delete(comic);
+    }
+}
