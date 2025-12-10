@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# secrets file for config values
+secret.yml

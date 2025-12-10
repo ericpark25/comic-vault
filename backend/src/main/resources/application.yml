@@ -1,26 +1,44 @@
-# spring.application.name=ims
+# spring.application.name=comicvault
 
 spring:
-  application:
-    name: ims
+    application:
+        name: comic-vault
 
-  # import external secrets file
-  config:
-    import: optional:file:./secrets.yml
+    # import external secrets file
+    config:
+        import: optional:file:./secrets.yml
 
-  # database
-  datasource:
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
-    driver-class-name: org.postgresql.Driver
+    # database
+    datasource:
+        # PostgreSQL configuration
+        # url: ${db.url}
+        # username: ${db.username}
+        # password: ${db.password}
+        # driver-class-name: org.postgresql.Driver
 
-  # jpa/hibernate
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        # H2 Configuration
+        url: jdbc:h2:mem:comicvault # In-memory database
+        driver-class-name: org.h2.Driver # used by JDBC to connect to database
+        username: sa # default for H2
+        password:
+
+    h2:
+        console:
+            enabled: true # Enables H2 web console
+            path: /h2-console # Access at http://localhost:8080/h2-console
+
+    # jpa/hibernate
+    # jpa:
+    #     hibernate:
+    #         ddl-auto: update
+    #     show-sql: true
+    #     properties:
+    #         hibernate:
+    #             dialect: org.hibernate.dialect.PostgreSQLDialect
+    #             format_sql: true
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true
+        database-platform: org.hibernate.dialect.H2Dialect # tells spring data jpa that we're using h2 database
+        defer-datasource-initialization: true # tells JPA to wait until hibernate has initialized
