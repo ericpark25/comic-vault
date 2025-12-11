@@ -33,4 +33,4 @@ build/
 .vscode/
 
 # secrets file for config values
-secret.yml
+secrets.yml

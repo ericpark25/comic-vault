@@ -12,10 +12,12 @@ import com.skillstorm.comic_vault.repository.ComicRepository;
 public class ComicService {
     
     private final ComicRepository comicRepository;
+    private final VaultInventoryService inventoryService;
     
     // constructor injection
-    public ComicService(ComicRepository comicRepository) {
+    public ComicService(ComicRepository comicRepository, VaultInventoryService inventoryService) {
         this.comicRepository = comicRepository;
+        this.inventoryService = inventoryService;
     }
     
     // get all comics
@@ -49,6 +51,11 @@ public class ComicService {
     public void deleteComic(Long id) {
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+
+        if (inventoryService.comicExistsInVaults(id)) {
+            throw new RuntimeException("Cannot delete comic that exists in vaults. Please remove from all vaults first.");
+        }
+                
         comicRepository.delete(comic);
     }
 }

@@ -12,10 +12,12 @@ import com.skillstorm.comic_vault.repository.VaultRepository;
 public class VaultService {
     
     private final VaultRepository vaultRepository;
+    private final VaultInventoryService inventoryService;
 
     // constructor injection for VaultRepository bean
-    public VaultService(VaultRepository vaultRepository) {
+    public VaultService(VaultRepository vaultRepository, VaultInventoryService inventoryService) {
         this.vaultRepository = vaultRepository;
+        this.inventoryService = inventoryService;
     }
 
     // get all vaults
@@ -50,6 +52,11 @@ public class VaultService {
     public void deleteVault(Long id) {
         // unwraps the Optional to a Vault if found; otherwise throws exception
         Vault vault = vaultRepository.findById(id).orElseThrow(() -> new RuntimeException("Vault not found with id: " + id));
+
+        // check if vault has an existing inventory
+        if (inventoryService.vaultHasInventory(id)) {
+            throw new RuntimeException("Cannot delete vault with existing inventory. Please empty the vault first.");
+        }
 
         vaultRepository.delete(vault);
     }
