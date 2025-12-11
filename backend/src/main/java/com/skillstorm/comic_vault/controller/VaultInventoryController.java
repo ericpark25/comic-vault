@@ -1,7 +1,6 @@
 package com.skillstorm.comic_vault.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.skillstorm.comic_vault.dto.AddComicRequest;
+import com.skillstorm.comic_vault.dto.UpdateQuantityRequest;
 import com.skillstorm.comic_vault.model.VaultInventory;
 import com.skillstorm.comic_vault.service.VaultInventoryService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/vaults/{vaultId}/inventory")
@@ -42,18 +45,15 @@ public class VaultInventoryController {
 
     // POST /api/vaults/{vaultId}/inventory - add comic to vault
     @PostMapping
-    public ResponseEntity<VaultInventory> addComicToVault(@PathVariable Long vaultId, @RequestBody Map<String, Object> request) {
-        Long comicId = Long.valueOf(request.get("comicId").toString());
-        Integer quantity = Integer.valueOf(request.get("quantity").toString());
-        VaultInventory inventory = vaultInventoryService.addComicToVault(vaultId, comicId, quantity);
+    public ResponseEntity<VaultInventory> addComicToVault(@PathVariable Long vaultId, @Valid @RequestBody AddComicRequest request) {
+        VaultInventory inventory = vaultInventoryService.addComicToVault(vaultId, request.getComicId(), request.getQuantity());
         return ResponseEntity.status(HttpStatus.CREATED).body(inventory);
     }
 
     // PUT /api/vaults/{vaultId}/inventory/{comicId} - update quantity
     @PutMapping("/{comicId}")
-    public ResponseEntity<VaultInventory> updateQuantity(@PathVariable Long vaultId, @PathVariable Long comicId, @RequestBody Map<String, Integer> request) {
-        Integer newQuantity = request.get("quantity");
-        VaultInventory inventory = vaultInventoryService.updateQuantity(vaultId, comicId, newQuantity);
+    public ResponseEntity<VaultInventory> updateQuantity(@PathVariable Long vaultId, @PathVariable Long comicId, @Valid @RequestBody UpdateQuantityRequest request) {
+        VaultInventory inventory = vaultInventoryService.updateQuantity(vaultId, comicId, request.getQuantity());
         return ResponseEntity.ok(inventory);
     }
 

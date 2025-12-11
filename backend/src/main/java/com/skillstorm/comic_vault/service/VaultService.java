@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.skillstorm.comic_vault.exception.InvalidOperationException;
+import com.skillstorm.comic_vault.exception.ResourceNotFoundException;
 import com.skillstorm.comic_vault.model.Vault;
 import com.skillstorm.comic_vault.repository.VaultRepository;
 
@@ -38,7 +40,7 @@ public class VaultService {
     // update existing vault
     public Vault updateVault(Long id, Vault vaultDetails) {
         // unwraps the Optional to a Vault if found; otherwise throws exception
-        Vault vault = vaultRepository.findById(id).orElseThrow(() -> new RuntimeException("Vault not found with id: " + id));
+        Vault vault = vaultRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vault not found with id: " + id));
 
         // update vault object with new vaultDetails
         vault.setName(vaultDetails.getName());
@@ -51,11 +53,11 @@ public class VaultService {
     // delete existing vault
     public void deleteVault(Long id) {
         // unwraps the Optional to a Vault if found; otherwise throws exception
-        Vault vault = vaultRepository.findById(id).orElseThrow(() -> new RuntimeException("Vault not found with id: " + id));
+        Vault vault = vaultRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vault not found with id: " + id));
 
         // check if vault has an existing inventory
         if (inventoryService.vaultHasInventory(id)) {
-            throw new RuntimeException("Cannot delete vault with existing inventory. Please empty the vault first.");
+            throw new InvalidOperationException("Cannot delete vault with existing inventory. Please empty the vault first.");
         }
 
         vaultRepository.delete(vault);

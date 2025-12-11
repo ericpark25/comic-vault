@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.skillstorm.comic_vault.exception.InvalidOperationException;
+import com.skillstorm.comic_vault.exception.ResourceNotFoundException;
 import com.skillstorm.comic_vault.model.Comic;
 import com.skillstorm.comic_vault.repository.ComicRepository;
 
@@ -38,7 +40,7 @@ public class ComicService {
     // update existing comic
     public Comic updateComic(Long id, Comic comicDetails) {
         Comic comic = comicRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Comic not found with id: " + id));
         
         comic.setSku(comicDetails.getSku());
         comic.setName(comicDetails.getName());
@@ -50,12 +52,12 @@ public class ComicService {
     // delete comic
     public void deleteComic(Long id) {
         Comic comic = comicRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comic not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Comic not found with id: " + id));
 
         if (inventoryService.comicExistsInVaults(id)) {
-            throw new RuntimeException("Cannot delete comic that exists in vaults. Please remove from all vaults first.");
+            throw new InvalidOperationException("Cannot delete comic that exists in vaults. Please remove from all vaults first.");
         }
-                
+
         comicRepository.delete(comic);
     }
 }

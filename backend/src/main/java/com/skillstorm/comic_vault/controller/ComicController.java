@@ -51,22 +51,14 @@ public class ComicController {
     // PUT /api/comics/{id} - update comic
     @PutMapping("/{id}")
     public ResponseEntity<Comic> updateComic(@PathVariable Long id, @Valid @RequestBody Comic comicDetails) {
-        try {
-            Comic updatedComic = comicService.updateComic(id, comicDetails);
-            return ResponseEntity.ok(updatedComic);            
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Comic updatedComic = comicService.updateComic(id, comicDetails);
+        return ResponseEntity.ok(updatedComic);
     }
 
     // DELETE /api/comics/{id} - delete comic
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComic(@PathVariable Long id) {
-        try {
-            comicService.deleteComic(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        comicService.deleteComic(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -56,23 +56,14 @@ public class VaultController {
     // PUT /api/vaults/{id} - Update vault
     @PutMapping("/{id}")
     public ResponseEntity<Vault> updateVault(@PathVariable Long id, @Valid @RequestBody Vault vaultDetails) {
-        // wrap try/catch because vaultService.updateVault() may throw an exception
-        try {
-            Vault updatedVault = vaultService.updateVault(id, vaultDetails);
-            return ResponseEntity.ok(updatedVault);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Vault updatedVault = vaultService.updateVault(id, vaultDetails);
+        return ResponseEntity.ok(updatedVault);
     }
 
     // DELETE /api/vaults/{id} - Delete vault
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVault(@PathVariable Long id) {
-        try {
-            vaultService.deleteVault(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        vaultService.deleteVault(id);
+        return ResponseEntity.noContent().build();
     }
 }
