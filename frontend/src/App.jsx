@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
@@ -9,21 +8,19 @@ import InventoryPage from './pages/InventoryPage';
 
 function App() {
     return (
-        <MantineProvider>
-            <BrowserRouter>
-                <Routes>
-                    <Route path='/' element={<Layout />}>
-                        <Route index element={<Dashboard />} />
-                        <Route path='vaults' element={<VaultsPage />} />
-                        <Route path='comics' element={<ComicsPage />} />
-                        <Route
-                            path='inventory/:vaultId'
-                            element={<InventoryPage />}
-                        />
-                    </Route>
-                </Routes>
-            </BrowserRouter>
-        </MantineProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route path='/' element={<Layout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path='vaults' element={<VaultsPage />} />
+                    <Route path='comics' element={<ComicsPage />} />
+                    <Route
+                        path='inventory/:vaultId'
+                        element={<InventoryPage />}
+                    />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
 export default App;
