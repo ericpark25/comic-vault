@@ -18,19 +18,13 @@ A full-stack inventory management application for tracking comic books across mu
 
 ## Features
 
-- **Comic Management**: Create, read, update, and delete comics with SKU, name, description, and price
-- **Vault Management**: Manage storage locations with configurable capacity limits
+- **Comic Management**: Create, read, update, and delete comics
+- **Vault Management**: Manage storage vaults
 - **Inventory Tracking**: Add comics to vaults, update quantities, and remove items
 - **Transfer System**: Move comics between vaults
 - **Capacity Monitoring**: Real-time capacity tracking with visual indicators
 - **Dashboard**: Overview of all vaults with capacity warnings
-
-## Prerequisites
-
-- Java 17 or higher
-- Node.js 18 or higher
-- PostgreSQL 12 or higher
-- Maven 3.6+
+- **Search**: Search for specific comics and vaults
 
 ## Setup Instructions
 
@@ -111,23 +105,3 @@ The frontend will start on `http://localhost:5173`
 - **Duplicate Prevention**: Increments quantity instead of creating duplicate entries
 - **Transfer Validation**: Ensures source has sufficient quantity and destination has capacity
 - **Delete Protection**: Prevents deletion of comics/vaults that are in use
-
-## Project Structure
-
-```
-comic-vault/
-├── backend/
-│   └── src/main/java/com/skillstorm/comic_vault/
-│       ├── controller/
-│       ├── service/
-│       ├── repository/
-│       ├── model/
-│       ├── dto/
-│       └── exception/
-└── frontend/
-    └── src/
-        ├── components/
-        ├── pages/
-        ├── api/
-        └── utils/
-```
