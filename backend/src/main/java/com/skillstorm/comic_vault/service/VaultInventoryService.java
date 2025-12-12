@@ -86,7 +86,7 @@ public class VaultInventoryService {
     }
 
     // helper function: get vault's current total quantity
-    private int getCurrentVaultTotal(Long vaultId) {
+    public int getCurrentVaultTotal(Long vaultId) {
         List<VaultInventory> inventories = inventoryRepository.findByVaultId(vaultId);
         int total = 0;
         for (VaultInventory inventory : inventories) {

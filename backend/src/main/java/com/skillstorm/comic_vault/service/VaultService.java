@@ -42,6 +42,13 @@ public class VaultService {
         // unwraps the Optional to a Vault if found; otherwise throws exception
         Vault vault = vaultRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Vault not found with id: " + id));
 
+        // validate that new max capacity is not less than current inventory total
+        int currentTotal = inventoryService.getCurrentVaultTotal(id);
+        if (vaultDetails.getMaxCapacity() < currentTotal) {
+            throw new InvalidOperationException("Cannot set max capacity to " + vaultDetails.getMaxCapacity() +
+                ". Vault currently contains " + currentTotal + " comics.");
+        }
+
         // update vault object with new vaultDetails
         vault.setName(vaultDetails.getName());
         vault.setLocation(vaultDetails.getLocation());
