@@ -120,7 +120,7 @@ function VaultForm({ opened, vault, onClose, onSuccess }) {
 
                 <TextInput
                     label='Location'
-                    placeholder='Basement, Shelf A'
+                    placeholder='Location'
                     value={formData.location}
                     onChange={(e) =>
                         setFormData({ ...formData, location: e.target.value })

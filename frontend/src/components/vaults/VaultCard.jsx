@@ -53,7 +53,7 @@ function VaultCard({ vault, onEdit }) {
                 {vault.location}
             </Text>
 
-            <Group gap='xs'>
+            <Group justify='space-between'>
                 <Button
                     size='xs'
                     variant='light'
@@ -62,24 +62,26 @@ function VaultCard({ vault, onEdit }) {
                 >
                     Inventory
                 </Button>
-                <Button
-                    size='xs'
-                    variant='subtle'
-                    leftSection={<IconEdit size={14} />}
-                    onClick={() => onEdit(vault)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    size='xs'
-                    variant='subtle'
-                    color='red'
-                    leftSection={<IconTrash size={14} />}
-                    onClick={handleDelete}
-                    loading={deleteMutation.isPending}
-                >
-                    Delete
-                </Button>
+                <Group gap='xs'>
+                    <Button
+                        size='xs'
+                        variant='subtle'
+                        leftSection={<IconEdit size={14} />}
+                        onClick={() => onEdit(vault)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        size='xs'
+                        variant='subtle'
+                        color='red'
+                        leftSection={<IconTrash size={14} />}
+                        onClick={handleDelete}
+                        loading={deleteMutation.isPending}
+                    >
+                        Delete
+                    </Button>
+                </Group>
             </Group>
         </Card>
     );

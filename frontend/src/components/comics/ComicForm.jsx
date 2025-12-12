@@ -47,7 +47,12 @@ function ComicForm({ opened, comic, onClose, onSuccess }) {
             onSuccess();
         },
         onError: (error) => {
-            showError(error, 'Error', 'Failed to create comic');
+            // check if error is about duplicate SKU
+            if (error.message && error.message.includes('already exists')) {
+                setErrors({ sku: error.message });
+            } else {
+                showError(error, 'Error', 'Failed to create comic');
+            }
         },
     });
 
@@ -59,7 +64,12 @@ function ComicForm({ opened, comic, onClose, onSuccess }) {
             onSuccess();
         },
         onError: (error) => {
-            showError(error, 'Error', 'Failed to update comic');
+            // check if error is about duplicate SKU
+            if (error.message && error.message.includes('already exists')) {
+                setErrors({ sku: error.message });
+            } else {
+                showError(error, 'Error', 'Failed to update comic');
+            }
         },
     });
 
@@ -125,7 +135,7 @@ function ComicForm({ opened, comic, onClose, onSuccess }) {
             <form onSubmit={handleSubmit}>
                 <TextInput
                     label='SKU'
-                    placeholder='CMC-001'
+                    placeholder='ABC-123'
                     value={formData.sku}
                     onChange={(e) =>
                         setFormData({ ...formData, sku: e.target.value })
@@ -137,7 +147,7 @@ function ComicForm({ opened, comic, onClose, onSuccess }) {
 
                 <TextInput
                     label='Name'
-                    placeholder='Amazing Spider-Man #1'
+                    placeholder='Absolute Batman #1'
                     value={formData.name}
                     onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -149,7 +159,7 @@ function ComicForm({ opened, comic, onClose, onSuccess }) {
 
                 <Textarea
                     label='Description'
-                    placeholder='First appearance of...'
+                    placeholder='...'
                     value={formData.description}
                     onChange={(e) =>
                         setFormData({

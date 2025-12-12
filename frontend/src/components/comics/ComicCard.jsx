@@ -47,35 +47,38 @@ function ComicCard({ comic, onEdit }) {
                 </Badge>
             </Group>
 
-            <Text size='sm' c='dimmed' mb='xs' lineClamp={2}>
+            <Text size='sm' c='dimmed' mb='md' lineClamp={2}>
                 {comic.description || 'No description'}
             </Text>
 
-            {comic.price !== null && comic.price !== undefined && (
-                <Text size='sm' fw={500} c='green' mb='md'>
-                    ${Number(comic.price).toFixed(2)}
-                </Text>
-            )}
-
-            <Group gap='xs'>
-                <Button
-                    size='xs'
-                    variant='subtle'
-                    leftSection={<IconEdit size={14} />}
-                    onClick={() => onEdit(comic)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    size='xs'
-                    variant='subtle'
-                    color='red'
-                    leftSection={<IconTrash size={14} />}
-                    onClick={handleDelete}
-                    loading={deleteMutation.isPending}
-                >
-                    Delete
-                </Button>
+            <Group justify='space-between'>
+                {comic.price !== null && comic.price !== undefined ? (
+                    <Text size='sm' fw={500} c='blue'>
+                        ${Number(comic.price).toFixed(2)}
+                    </Text>
+                ) : (
+                    <div />
+                )}
+                <Group gap='xs'>
+                    <Button
+                        size='xs'
+                        variant='subtle'
+                        leftSection={<IconEdit size={14} />}
+                        onClick={() => onEdit(comic)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        size='xs'
+                        variant='subtle'
+                        color='red'
+                        leftSection={<IconTrash size={14} />}
+                        onClick={handleDelete}
+                        loading={deleteMutation.isPending}
+                    >
+                        Delete
+                    </Button>
+                </Group>
             </Group>
         </Card>
     );

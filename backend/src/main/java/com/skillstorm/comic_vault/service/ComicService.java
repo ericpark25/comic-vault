@@ -34,6 +34,11 @@ public class ComicService {
     
     // create new comic
     public Comic createComic(Comic comic) {
+        // check if SKU already exists
+        if (comicRepository.existsBySku(comic.getSku())) {
+            throw new InvalidOperationException("A comic with SKU '" + comic.getSku() + "' already exists");
+        }
+
         return comicRepository.save(comic);
     }
     
@@ -41,6 +46,14 @@ public class ComicService {
     public Comic updateComic(Long id, Comic comicDetails) {
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comic not found with id: " + id));
+
+        // check if SKU is being changed to one that already exists
+        if (!comic.getSku().equals(comicDetails.getSku())) {
+            Optional<Comic> existingComic = comicRepository.findBySku(comicDetails.getSku());
+            if (existingComic.isPresent() && !existingComic.get().getId().equals(id)) {
+                throw new InvalidOperationException("A comic with SKU '" + comicDetails.getSku() + "' already exists");
+            }
+        }
 
         comic.setSku(comicDetails.getSku());
         comic.setName(comicDetails.getName());

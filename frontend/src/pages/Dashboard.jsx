@@ -139,7 +139,7 @@ function Dashboard() {
                             onClick={() => navigate('/vaults')}
                             style={{ textDecoration: 'none' }}
                         >
-                            <IconBox size={48} className='text-blue-500' />
+                            <IconBox size={48} color='blue' />
                         </Anchor>
                         <div>
                             <Text size='xl' fw={700}>
@@ -158,7 +158,7 @@ function Dashboard() {
                             onClick={() => navigate('/comics')}
                             style={{ textDecoration: 'none' }}
                         >
-                            <IconBook size={48} className='text-green-500' />
+                            <IconBook size={48} color='green' />
                         </Anchor>
                         <div>
                             <Text size='xl' fw={700}>

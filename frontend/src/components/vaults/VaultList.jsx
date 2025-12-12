@@ -1,12 +1,12 @@
-import { SimpleGrid } from '@mantine/core';
+import { SimpleGrid, Text } from '@mantine/core';
 import VaultCard from './VaultCard';
 
 function VaultList({ vaults, onEdit }) {
     if (!vaults || vaults.length === 0) {
         return (
-            <p className='text-gray-500'>
+            <Text c='dimmed'>
                 No vaults yet. Create one to get started!
-            </p>
+            </Text>
         );
     }
 

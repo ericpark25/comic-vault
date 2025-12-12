@@ -1,9 +1,9 @@
-import { SimpleGrid } from '@mantine/core';
+import { SimpleGrid, Text } from '@mantine/core';
 import ComicCard from './ComicCard';
 
 function ComicList({ comics, onEdit }) {
     if (!comics || comics.length === 0) {
-        return <p className='text-gray-500'>No comics found.</p>;
+        return <Text c='dimmed'>No comics found.</Text>;
     }
 
     return (
