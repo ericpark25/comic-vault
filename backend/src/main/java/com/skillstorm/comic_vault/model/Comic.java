@@ -1,5 +1,6 @@
 package com.skillstorm.comic_vault.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -10,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -36,6 +38,10 @@ public class Comic {
     @Column(length = 1000)
     private String description;
     
+    @DecimalMin(value = "0.0", inclusive = true, message = "Price must be non-negative")
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
+
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
     
@@ -57,10 +63,11 @@ public class Comic {
     public Comic() {
     }
 
-    public Comic(String sku, String name, String description) {
+    public Comic(String sku, String name, String description, BigDecimal price) {
         this.sku = sku;
         this.name = name;
         this.description = description;
+        this.price = price;
     }
 
     public Long getId() {
@@ -93,6 +100,14 @@ public class Comic {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public LocalDateTime getCreatedAt() {
