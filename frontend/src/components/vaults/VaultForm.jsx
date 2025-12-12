@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, TextInput, NumberInput, Button, Group } from '@mantine/core';
 import { useMutation } from '@tanstack/react-query';
 import { vaultApi } from '../../api/vaults';
 import { showSuccess, showError } from '../../utils/notifications';
 
 function VaultForm({ opened, vault, onClose, onSuccess }) {
+    // Determines if form is for editing or creating a vault
     const isEditing = !!vault;
 
+    // Pre-populate form data if it's an edit form; default values if create form
+    // Controlled form
     const [formData, setFormData] = useState({
         name: vault?.name || '',
         location: vault?.location || '',
@@ -15,6 +18,19 @@ function VaultForm({ opened, vault, onClose, onSuccess }) {
 
     const [errors, setErrors] = useState({});
 
+    // Reset form when modal opens/closes or vault changes
+    useEffect(() => {
+        if (opened) {
+            setFormData({
+                name: vault?.name || '',
+                location: vault?.location || '',
+                maxCapacity: vault?.maxCapacity || 100,
+            });
+            setErrors({});
+        }
+    }, [opened, vault]);
+
+    // Mutation to create a new vault
     const createMutation = useMutation({
         mutationFn: vaultApi.create,
         onSuccess: () => {
@@ -26,6 +42,7 @@ function VaultForm({ opened, vault, onClose, onSuccess }) {
         },
     });
 
+    // Mutation to update an existing vault
     const updateMutation = useMutation({
         mutationFn: (data) => vaultApi.update(vault.id, data),
         onSuccess: () => {
@@ -37,6 +54,7 @@ function VaultForm({ opened, vault, onClose, onSuccess }) {
         },
     });
 
+    // Form validation
     const validate = () => {
         const newErrors = {};
 
@@ -59,6 +77,7 @@ function VaultForm({ opened, vault, onClose, onSuccess }) {
         return newErrors;
     };
 
+    // Handle form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -70,6 +89,7 @@ function VaultForm({ opened, vault, onClose, onSuccess }) {
 
         setErrors({});
 
+        // Different mutations based on whether the form is for editing or deleting
         if (isEditing) {
             updateMutation.mutate(formData);
         } else {

@@ -41,11 +41,12 @@ public class ComicService {
     public Comic updateComic(Long id, Comic comicDetails) {
         Comic comic = comicRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comic not found with id: " + id));
-        
+
         comic.setSku(comicDetails.getSku());
         comic.setName(comicDetails.getName());
         comic.setDescription(comicDetails.getDescription());
-        
+        comic.setPrice(comicDetails.getPrice());
+
         return comicRepository.save(comic);
     }
     

@@ -15,7 +15,6 @@ import VaultList from '../components/vaults/VaultList';
 import VaultForm from '../components/vaults/VaultForm';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ErrorAlert from '../components/shared/ErrorAlert';
-import { calculateTotalQuantity } from '../utils/inventory';
 
 function VaultsPage() {
     const [formVault, setFormVault] = useState(null);
@@ -37,6 +36,7 @@ function VaultsPage() {
         setFormVault(null);
     };
 
+    // Invalidate query to refetch vaults
     const handleSuccess = () => {
         queryClient.invalidateQueries({ queryKey: ['vaults'] });
         handleClose();
