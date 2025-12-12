@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { inventoryApi } from '../../api/inventory';
 import { showSuccess, showError } from '../../utils/notifications';
 
-function UpdateQuantityModal({ item, vaultId, onClose }) {
+function UpdateQuantityModal({ item, vaultId, vault, currentInventory, onClose }) {
     const queryClient = useQueryClient();
     const [quantity, setQuantity] = useState(0);
     const [error, setError] = useState('');
@@ -13,6 +13,9 @@ function UpdateQuantityModal({ item, vaultId, onClose }) {
     useEffect(() => {
         if (item) {
             setQuantity(item.quantity);
+            setError('');
+        } else {
+            // Clear error when modal closes (item becomes null)
             setError('');
         }
     }, [item]);
@@ -44,6 +47,21 @@ function UpdateQuantityModal({ item, vaultId, onClose }) {
             return;
         }
 
+        // Client-side capacity validation
+        if (vault && currentInventory) {
+            // Calculate current total in vault
+            const currentTotal = currentInventory.reduce((sum, inv) => sum + inv.quantity, 0);
+            // Calculate what the new total would be
+            const quantityChange = quantity - item.quantity;
+            const newTotal = currentTotal + quantityChange;
+
+            if (newTotal > vault.maxCapacity) {
+                const maxAllowed = vault.maxCapacity - (currentTotal - item.quantity);
+                setError(`Exceeds vault capacity. Maximum allowed: ${maxAllowed}`);
+                return;
+            }
+        }
+
         setError('');
         updateMutation.mutate({ quantity });
     };
@@ -62,7 +80,10 @@ function UpdateQuantityModal({ item, vaultId, onClose }) {
                     placeholder='0'
                     min={0}
                     value={quantity}
-                    onChange={setQuantity}
+                    onChange={(value) => {
+                        setQuantity(value);
+                        setError('');
+                    }}
                     error={error}
                     mb='md'
                     required

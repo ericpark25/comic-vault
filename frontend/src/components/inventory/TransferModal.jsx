@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Modal,
     Select,
@@ -26,6 +26,14 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
     // error state used to show error messages under inputs
     const [errors, setErrors] = useState({});
 
+    // Clear form and errors when modal closes
+    useEffect(() => {
+        if (!opened) {
+            setFormData({ destinationVaultId: '', comicId: '', quantity: 1 });
+            setErrors({});
+        }
+    }, [opened]);
+
     // query all vaults and caches under ['vaults'] queryKey
     // used to populate the destination dropdown
     const { data: vaults } = useQuery({
@@ -38,6 +46,13 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
     const { data: sourceInventory } = useQuery({
         queryKey: ['inventory', sourceVaultId],
         queryFn: () => inventoryApi.getByVault(sourceVaultId),
+    });
+
+    // query for destination vault's inventory to check capacity
+    const { data: destinationInventory } = useQuery({
+        queryKey: ['inventory', formData.destinationVaultId],
+        queryFn: () => inventoryApi.getByVault(formData.destinationVaultId),
+        enabled: !!formData.destinationVaultId,
     });
 
     // called in handleSubmit function
@@ -81,6 +96,15 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
     );
     const maxQuantity = selectedInventoryItem?.quantity || 0;
 
+    // get destination vault info
+    const destinationVault = vaults?.find(
+        (v) => v.id.toString() === formData.destinationVaultId
+    );
+    const destinationCurrentTotal = destinationInventory?.reduce(
+        (sum, inv) => sum + inv.quantity,
+        0
+    ) || 0;
+
     // client side validation of form fields
     const validate = () => {
         const newErrors = {};
@@ -104,6 +128,15 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
 
         if (formData.quantity > maxQuantity) {
             newErrors.quantity = `Only ${maxQuantity} available`;
+        }
+
+        // Client-side capacity validation for destination vault
+        if (destinationVault && formData.quantity) {
+            const newDestinationTotal = destinationCurrentTotal + formData.quantity;
+            if (newDestinationTotal > destinationVault.maxCapacity) {
+                const maxAllowed = destinationVault.maxCapacity - destinationCurrentTotal;
+                newErrors.quantity = `Destination vault can only accept ${maxAllowed} more comics`;
+            }
         }
 
         return newErrors;
@@ -148,13 +181,19 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
                         placeholder='Select destination'
                         data={destinationOptions}
                         value={formData.destinationVaultId}
-                        onChange={(value) =>
+                        onChange={(value) => {
                             setFormData({
                                 ...formData,
                                 destinationVaultId: value,
-                            })
-                        }
+                            });
+                            setErrors({ ...errors, destinationVaultId: '' });
+                        }}
                         error={errors.destinationVaultId}
+                        description={
+                            destinationVault
+                                ? `Capacity: ${destinationCurrentTotal} / ${destinationVault.maxCapacity}`
+                                : ''
+                        }
                         required
                     />
 
@@ -164,9 +203,10 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
                         data={comicOptions}
                         searchable
                         value={formData.comicId}
-                        onChange={(value) =>
-                            setFormData({ ...formData, comicId: value })
-                        }
+                        onChange={(value) => {
+                            setFormData({ ...formData, comicId: value });
+                            setErrors({ ...errors, comicId: '' });
+                        }}
                         error={errors.comicId}
                         required
                     />
@@ -177,9 +217,10 @@ function TransferModal({ opened, onClose, sourceVaultId }) {
                         min={1}
                         max={maxQuantity}
                         value={formData.quantity}
-                        onChange={(value) =>
-                            setFormData({ ...formData, quantity: value })
-                        }
+                        onChange={(value) => {
+                            setFormData({ ...formData, quantity: value });
+                            setErrors({ ...errors, quantity: '' });
+                        }}
                         error={errors.quantity}
                         description={
                             maxQuantity > 0 ? `Available: ${maxQuantity}` : ''

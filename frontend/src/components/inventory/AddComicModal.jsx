@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Select, NumberInput, Button, Group } from '@mantine/core';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { comicApi } from '../../api/comics';
@@ -15,6 +15,14 @@ function AddComicModal({ opened, onClose, vaultId, vault }) {
     });
 
     const [errors, setErrors] = useState({});
+
+    // Clear form and errors when modal closes
+    useEffect(() => {
+        if (!opened) {
+            setFormData({ comicId: '', quantity: 1 });
+            setErrors({});
+        }
+    }, [opened]);
 
     // fetch comics and cache under 'comics' key
     const { data: comics } = useQuery({
@@ -107,9 +115,10 @@ function AddComicModal({ opened, onClose, vaultId, vault }) {
                     data={comicOptions}
                     searchable
                     value={formData.comicId}
-                    onChange={(value) =>
-                        setFormData({ ...formData, comicId: value })
-                    }
+                    onChange={(value) => {
+                        setFormData({ ...formData, comicId: value });
+                        setErrors({ ...errors, comicId: '' });
+                    }}
                     error={errors.comicId}
                     mb='sm'
                     required
@@ -120,9 +129,10 @@ function AddComicModal({ opened, onClose, vaultId, vault }) {
                     placeholder='1'
                     min={1}
                     value={formData.quantity}
-                    onChange={(value) =>
-                        setFormData({ ...formData, quantity: value })
-                    }
+                    onChange={(value) => {
+                        setFormData({ ...formData, quantity: value });
+                        setErrors({ ...errors, quantity: '' });
+                    }}
                     error={errors.quantity}
                     description={`Remaining capacity: ${remainingCapacity}`}
                     mb='md'

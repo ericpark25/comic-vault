@@ -101,7 +101,7 @@ function InventoryPage() {
                     </Group>
                 </Group>
 
-                <InventoryTable inventory={inventory} vaultId={vaultId} />
+                <InventoryTable inventory={inventory} vaultId={vaultId} vault={vault} />
 
                 <AddComicModal
                     opened={isAddModalOpen}

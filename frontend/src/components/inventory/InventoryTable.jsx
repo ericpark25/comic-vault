@@ -7,7 +7,7 @@ import { inventoryApi } from '../../api/inventory';
 import UpdateQuantityModal from './UpdateQuantityModal';
 import { showSuccess, showError } from '../../utils/notifications';
 
-function InventoryTable({ inventory, vaultId }) {
+function InventoryTable({ inventory, vaultId, vault }) {
     const [editingItem, setEditingItem] = useState(null);
     const queryClient = useQueryClient();
 
@@ -109,6 +109,8 @@ function InventoryTable({ inventory, vaultId }) {
             <UpdateQuantityModal
                 item={editingItem}
                 vaultId={vaultId}
+                vault={vault}
+                currentInventory={inventory}
                 onClose={() => setEditingItem(null)}
             />
         </>
